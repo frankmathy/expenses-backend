@@ -27,6 +27,11 @@ exports.findByEmail = email => {
   return User.find({ email: email });
 };
 
+exports.createUser = userData => {
+  const user = new User(userData);
+  return user.save();
+};
+
 exports.list = (perPage, page) => {
   return new Promise((resolve, reject) => {
     User.find()
