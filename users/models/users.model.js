@@ -9,7 +9,7 @@ const userSchema = new Schema({
   permissionLevel: Number
 });
 
-userSchema.virtual('id').get(() => {
+userSchema.virtual('id').get(function() {
   return this._id.toHexString();
 });
 
@@ -25,6 +25,15 @@ const User = mongoose.model('Users', userSchema);
 
 exports.findByEmail = email => {
   return User.find({ email: email });
+};
+
+exports.findById = id => {
+  return User.findById(id).then(result => {
+    result = result.toJSON();
+    delete result._id;
+    delete result.__v;
+    return result;
+  });
 };
 
 exports.createUser = userData => {
@@ -56,9 +65,9 @@ exports.patchUser = (id, userData) => {
   );
 };
 
-exports.removeById = userID => {
+exports.removeById = userId => {
   return new Promise((resolve, reject) => {
-    User.deleteMany({ id: userId }, err => {
+    User.deleteMany({ _id: userId }, err => {
       if (err) {
         reject(err);
       } else {
